@@ -1,7 +1,13 @@
 import dotenv from "dotenv"
 dotenv.config();
-const config = {
+  if(!process.env.MONGO_URI)
+  {
+    throw new Error("database connection is not found.");
+  }
 
+
+const config = {
+  MONGO_URI : process.env.MONGO_URI
 }
 
 export default config;
