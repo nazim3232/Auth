@@ -44,3 +44,41 @@ export async function register(req, res) {
     res.status(500).json({ message: "Internal server error" });
   }
 }
+
+
+
+export async function getMe(req, res) {
+  try {
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) {
+      return res.status(401).json({
+        message: "TOKEN NOT FOUND"
+      });
+    }
+
+    
+    const decoded = jwt.verify(token, config.JWT_SECRET);
+
+    
+    const user = await userModel.findById(decoded.id);
+    if (!user) {
+      return res.status(404).json({
+        message: "USER NOT FOUND"
+      });
+    }
+
+    res.status(200).json({
+      user: {
+        username: user.username,
+        email: user.email
+      }
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: "SERVER ERROR",
+      error: err.message
+    });
+  }
+}
+
+
